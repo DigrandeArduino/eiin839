@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Net.Sockets;
 using System.IO;
+using System.Net;
 
 namespace Echo
 {
@@ -37,6 +38,7 @@ namespace Echo
     public class handleClient
     {
         TcpClient clientSocket;
+        private string HTTP_ROOT = "../../../www";
         public void startClient(TcpClient inClientSocket)
         {
             this.clientSocket = inClientSocket;
@@ -52,12 +54,19 @@ namespace Echo
             BinaryReader reader = new BinaryReader(stream);
             BinaryWriter writer = new BinaryWriter(stream);
 
+            string file_location = HTTP_ROOT + "/pub/index.html";
+            string success = "http/1.0 200 OK\n";
+            string web_page = File.ReadAllText(file_location)+"\n";
+
             while (true)
             {
+                
+       
+                string wait = reader.ReadString();
+                /*Console.WriteLine();*/
 
-                string str = reader.ReadString();
-                Console.WriteLine(str);
-                writer.Write(str);
+                writer.Write(success);
+                writer.Write(web_page);
             }
         }
 
