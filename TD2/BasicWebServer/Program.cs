@@ -115,7 +115,7 @@ namespace BasicServerHTTPlistener
 
                 /*
                  * ICI LE IF ELSE NE CORRESPONDE PAS A LA PARTIE REFLECTION ! C'est simplement pour séparer les exercices dans
-                 * plusieurs classes déférente pour clarifier ma solution au TD. Comme discuté avec M. Vella cela correspond 
+                 * plusieurs classes déférentes pour clarifier ma solution au TD. Comme discuté avec M. Vella cela correspond 
                  * donc à ce qui est attendu car il y a bien de la réfection pour le choix de la méthode appelé dans
                  * l'exercice 1. En effet j'ai créé 4 méthodes pour cet exercice et elles sont appelées de manière réflective.
                  * Merci pour votre compréhension.
