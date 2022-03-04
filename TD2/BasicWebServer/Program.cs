@@ -128,7 +128,7 @@ namespace BasicServerHTTPlistener
                 }
                 else if (request.Url.Segments[1].Equals("exo2"))
                 {
-                    Console.WriteLine("EXO 2 MyMethods");
+                    Console.WriteLine("EXO 2 InvocExec");
 
                     Type type = typeof(InvocExec);
                     MethodInfo method = type.GetMethod("getExec");
@@ -139,8 +139,20 @@ namespace BasicServerHTTPlistener
 
                     Console.WriteLine(result);
                 }
+                else if (request.Url.Segments[1].Equals("exo3"))
+                {
+                    Console.WriteLine("EXO 3 MyMethods");
 
-                Console.WriteLine(result);
+                    Type type = typeof(ServerToclient);
+                    MethodInfo method = type.GetMethod("incr");
+
+                    string prod = (string)method.Invoke(null, new object[] { param1 });
+
+                    result = "Exercice 3 : Resultat de incr => " + prod;
+
+                    Console.WriteLine(result);
+                }
+
 
                 //parse params in url
                 Console.WriteLine("param1 = " + param1);
@@ -271,5 +283,25 @@ internal class InvocExec
             }
         }
         return result;
+    }
+}
+
+internal class ServerToclient
+{
+    /*
+     * To use the methode incr :
+     * http://localhost:8080/exo3?param1=5
+     */
+    public static string incr(string nb)
+    {
+        try
+        {
+            int nb1 = Int32.Parse(nb);
+            return (nb1+1).ToString();
+        }
+        catch (FormatException)
+        {
+            throw new FormatException();
+        }
     }
 }
