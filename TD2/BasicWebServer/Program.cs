@@ -113,11 +113,21 @@ namespace BasicServerHTTPlistener
 
                 string result = "";
 
+                /*
+                 * ICI LE IF ELSE NE CORRESPONDE PAS A LA PARTIE REFLECTION ! C'est simplement pour séparer les exercices dans
+                 * plusieurs classes déférente pour clarifier ma solution au TD. Comme discuté avec M. Vella cela correspond 
+                 * donc à ce qui est attendu car il y a bien de la réfection pour le choix de la méthode appelé dans
+                 * l'exercice 1. En effet j'ai créé 4 méthodes pour cet exercice et elles sont appelées de manière réflective.
+                 * Merci pour votre compréhension.
+                 */
                 if (request.Url.Segments[1].Equals("exo1/"))
                 {
                     Console.WriteLine("EXO 1 MyMethods");
 
                     Type type = typeof(MyMethods);
+                    /*
+                     * ICI APPELLE DES METHODES DE MANIERE REFLECTIVE : add, sub, mult ou concat.
+                     */
                     MethodInfo method = type.GetMethod(request.Url.Segments[2]);
 
                     string prod = (string)method.Invoke(null, new object[] { param1, param2 });

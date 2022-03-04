@@ -19,7 +19,8 @@
                 {
                     client.DefaultRequestHeaders.Accept.Clear();
                     string answer = await client.GetStringAsync("http://localhost:8080/exo3?param1=" + nb.ToString());
-                    Console.WriteLine(answer);
+                    var tab = answer.Split();
+                    Console.WriteLine("Resultat obtenue : "+tab[tab.Length-1]);
                 }
             }
         }
