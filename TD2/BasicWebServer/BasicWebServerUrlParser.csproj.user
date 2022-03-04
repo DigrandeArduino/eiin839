@@ -2,5 +2,6 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <StartArguments>http://localhost:8080/ http://localhost:8081/</StartArguments>
+    <StartAction>Project</StartAction>
   </PropertyGroup>
 </Project>

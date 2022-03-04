@@ -148,7 +148,7 @@ namespace BasicServerHTTPlistener
 
                     string prod = (string)method.Invoke(null, new object[] { param1 });
 
-                    result = "Exercice 3 : Resultat de incr => " + prod;
+                    result = prod;
 
                     Console.WriteLine(result);
                 }
@@ -297,7 +297,7 @@ internal class ServerToclient
         try
         {
             int nb1 = Int32.Parse(nb);
-            return (nb1+1).ToString();
+            return "incr OK val = " + (nb1+1).ToString();
         }
         catch (FormatException)
         {
