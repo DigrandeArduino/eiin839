@@ -252,7 +252,7 @@ internal class InvocExec
     public static string getExec(string arg)
     {
         ProcessStartInfo start = new ProcessStartInfo();
-        start.FileName = @"../../../ExecTest/bin/Debug/ExecTest.exe";
+        start.FileName = @"../../../BasicWebServer/ExecExterne/ExecTest.exe";
         start.Arguments = arg; // Specify arguments.
         start.UseShellExecute = false;
         start.RedirectStandardOutput = true;
