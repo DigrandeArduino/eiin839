@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Web;
 
 namespace BasicServerHTTPlistener
 {
+
     internal class Program
     {
         private static void Main(string[] args)
@@ -18,8 +20,8 @@ namespace BasicServerHTTPlistener
                 Console.WriteLine("A more recent Windows version is required to use the HttpListener class.");
                 return;
             }
- 
- 
+
+
             // Create a listener.
             HttpListener listener = new HttpListener();
 
@@ -71,7 +73,7 @@ namespace BasicServerHTTPlistener
                         documentContents = readStream.ReadToEnd();
                     }
                 }
-                
+
                 // get url 
                 Console.WriteLine($"Received request for {request.Url}");
 
@@ -87,18 +89,62 @@ namespace BasicServerHTTPlistener
                 Console.WriteLine(request.Url.LocalPath);
 
                 // parse path in url 
+                String name = "";
+                String exec = "";
                 foreach (string str in request.Url.Segments)
                 {
                     Console.WriteLine(str);
+                    if (str.Equals("newAnswer"))
+                    {
+                        name = "newAnswer";
+                    }
+                    if (str.Equals("callExec"))
+                    {
+                        exec = "callExec";
+                    };
                 }
 
                 //get params un url. After ? and between &
 
+                String param1 = HttpUtility.ParseQueryString(request.Url.Query).Get("param1");
+                String param2 = HttpUtility.ParseQueryString(request.Url.Query).Get("param2");
+
                 Console.WriteLine(request.Url.Query);
 
+                string result = "";
+
+                if (request.Url.Segments[1].Equals("exo1/"))
+                {
+                    Console.WriteLine("EXO 1 MyMethods");
+
+                    Type type = typeof(MyMethods);
+                    MethodInfo method = type.GetMethod(request.Url.Segments[2]);
+
+                    string prod = (string)method.Invoke(null, new object[] { param1, param2 });
+
+                    result = "Exercice 1 : Resultat de " + request.Url.Segments[2] + " avec " + param1 + " et " + param2 + " => " + prod;
+
+                    Console.WriteLine(result);
+                }
+                else if (request.Url.Segments[1].Equals("exo2"))
+                {
+                    Console.WriteLine("EXO 2 MyMethods");
+
+                    Type type = typeof(InvocExec);
+                    MethodInfo method = type.GetMethod("getExec");
+
+                    string prod = (string)method.Invoke(null, new object[] { param1 });
+
+                    result = "Exercice 2 : Resultat de getExec => " + prod;
+
+                    Console.WriteLine(result);
+                }
+
+                Console.WriteLine(result);
+
                 //parse params in url
-                Console.WriteLine("param1 = " + HttpUtility.ParseQueryString(request.Url.Query).Get("param1"));
-                Console.WriteLine("param2 = " + HttpUtility.ParseQueryString(request.Url.Query).Get("param2"));
+                Console.WriteLine("param1 = " + param1);
+                Console.WriteLine("param2 = " + param2);
                 Console.WriteLine("param3 = " + HttpUtility.ParseQueryString(request.Url.Query).Get("param3"));
                 Console.WriteLine("param4 = " + HttpUtility.ParseQueryString(request.Url.Query).Get("param4"));
 
@@ -109,7 +155,7 @@ namespace BasicServerHTTPlistener
                 HttpListenerResponse response = context.Response;
 
                 // Construct a response.
-                string responseString = "<HTML><BODY> Hello world!</BODY></HTML>";
+                string responseString = result;
                 byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
                 // Get a response stream and write the response to it.
                 response.ContentLength64 = buffer.Length;
@@ -121,5 +167,109 @@ namespace BasicServerHTTPlistener
             // Httplistener neither stop ... But Ctrl-C do that ...
             // listener.Stop();
         }
+    }
+}
+
+/*
+ * Exercice 1 :
+ */
+internal class MyMethods
+{
+    /*
+     * To use the methode add :
+     * http://localhost:8080/exo1/add?param1=1&param2=2
+     */
+    public static string add(string a, string b)
+    {
+        try
+        {
+            int nb1 = Int32.Parse(a);
+            int nb2 = Int32.Parse(b);
+            return (nb1 + nb2).ToString();
+        }
+        catch (FormatException)
+        {
+            throw new FormatException();
+        }
+    }
+
+    /*
+     * To use the methode sub :
+     * http://localhost:8080/exo1/sub?param1=1&param2=2
+     */
+
+    public static string sub(string a, string b)
+    {
+        try
+        {
+            int nb1 = Int32.Parse(a);
+            int nb2 = Int32.Parse(b);
+            return (nb1 - nb2).ToString();
+        }
+        catch (FormatException)
+        {
+            throw new FormatException();
+        }
+    }
+
+    /*
+     * To use the methode mult :
+     * http://localhost:8080/exo1/mult?param1=1&param2=2
+     */
+    public static string mult(string a, string b)
+    {
+        try
+        {
+            int nb1 = Int32.Parse(a);
+            int nb2 = Int32.Parse(b);
+            return (nb1 * nb2).ToString();
+        }
+        catch (FormatException)
+        {
+            throw new FormatException();
+        }
+    }
+
+    /*
+     * To use the methode concat :
+     * http://localhost:8080/exo1/concat?param1=1&param2=2
+     */
+    public static string concat(string a, string b)
+    {
+        return a + b;
+    }
+}
+
+/*
+ * Exercice 2 :
+ */
+internal class InvocExec
+{
+    /*
+     * To use the methode getExec :
+     * http://localhost:8080/exo2?param1=test
+     */
+    public static string getExec(string arg)
+    {
+        ProcessStartInfo start = new ProcessStartInfo();
+        start.FileName = @"../../../ExecTest/bin/Debug/ExecTest.exe";
+        start.Arguments = arg; // Specify arguments.
+        start.UseShellExecute = false;
+        start.RedirectStandardOutput = true;
+
+        string result = "Error no execution here";
+
+        using (Process process = Process.Start(start))
+        {
+            //
+            // Read in all the text from the process with the StreamReader.
+            //
+            using (StreamReader reader = process.StandardOutput)
+            {
+                result = reader.ReadToEnd();
+                Console.WriteLine(result);
+            }
+        }
+        return result;
     }
 }
